@@ -57,10 +57,8 @@ def get_dht_reading():
     while True:
         try:
             #Get DHT11 Temperature and Humidity Data
-            humidity,temperature = Adafruit_DHT.read_retry(sensor, pin)
-            #Convert temperature to Celcuis
+            humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
             temperature = temperature *(9/5) + 32
-#             humidity = sensor.humidity
             if humidity is not None and temperature is not None:
                 #Save readings to MYSQL
                 save_dht_data(temperature,humidity)
@@ -77,7 +75,6 @@ def get_dht_reading():
 # def get_ammonia_reading():
 #     while True:
 #         try:
-            
 
 #Run Flask API
 if __name__ == '__main__':

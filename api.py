@@ -20,12 +20,13 @@ db_config={
     'password':'admin',
     'database':'sensors',
     }
-
-def save_data(temperature,humidity):
+#Save DHT11 Temperature and Humidity
+def save_dht_reading(temperature,humidity):
     try:
         conn = mysql.connector.connect(**db_config)
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO dht11 (temp, humid) VALUES (%s, %s)", (temperature, humidity))
+        cursor.execute("INSERT INTO dht_temp (temp) VALUES (%s)", (temperature))
+        cursor.execute("INSERT INTO dht_humid (humid) VALUES (%s)", (humidity))
         conn.commit()
         cursor.close()
         conn.close()
@@ -35,34 +36,64 @@ def save_data(temperature,humidity):
         return False
 
 # Start DHT11 Humidity and Temperature reading
-@app.route('/temp') # ,,methods=['POST']
-def get_dht_reading():
-    while True:
-        try:
-            humidity,temperature = Adafruit_DHT.read_retry(sensor, pin)
-            #Get DHT11 Temperature and Humidity Data
-#             temperature = sensor.temperature
-#             #Convert temperature to Celcuis
-            temperature = temperature *(9/5) + 32
-#             humidity = sensor.humidity
-            if humidity is not None and temperature is not None:
-    #             print(f'Temperature={temperature:.2f}°C, Humidity={humidity:.2f}%')
-                save_data(temperature,humidity)
-                return jsonify({"Temperature":temperature,"Humidity":humidity})
+@app.route('/insert-dht-data')
+def insert_data():
+    try:
+        humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
+        temperature = temperature *(9/5) + 32
+        if temperature is not None and humidity is not None:
+            save_dht_reading(temperature,humidity)
+            return jsonify({"temperature": temperature, "humidity": humidity})
+        else:
+            return jsonify({"error": "Failed to retrieve data from sensor"}), 500
+    except RuntimeError as error:
+        return jsonify({"error": str(error)}), 500
+    except Exception as error:
+        return jsonify({"error": str(error)}), 500
 
-            else:
-                return jsonify ({"Runtime Error":str(error)}),500
-#             print('Failed to retrieve data from sensor')
-#             return jsonify({"Temperature":temperature,"Humidity":humidity})
-        except RuntimeError as error:
-             return jsonify ({"Runtime Error":str(error)}),500
-        except Exception as error:
-             return jsonify({"Error":str(error)}),500
-# End DHT11 Temperature and Humidity reading
+# Fetch DHT11 temperature and humidity
+@app.route('/dht11-temp',methods=['GET'])
+def get_dht_temp():
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM dht_temp")
+        rows =cursor.fetchall()
+        cursor.close()
+        conn.close()
+        # Convert fetched data to JSON format
+        data = []
+        for row in rows:
+            data.append({'id': row[0], 'temp': row[1],'created_at': row[2]})
+        # Return JSON response
+        return jsonify(data), 200
+    except Exception as e:
+        print("Error inserting data:", e)
+        return False
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Start MQ137 reading
+@app.route('/mq137') # ,,methods=['POST']
+def get_mq137_reading():
+    try:
+        humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
+        temperature = temperature *(9/5) + 32
+        if temperature is not None and humidity is not None:
+            save_data(temperature,humidity)
+            return jsonify({"temperature": temperature, "humidity": humidity})
+        else:
+            return jsonify({"error": "Failed to retrieve data from sensor"}), 500
+    except RuntimeError as error:
+        return jsonify({"error": str(error)}), 500
+    except Exception as error:
+        return jsonify({"error": str(error)}), 500
+# End MQ137 reading
+
 
 @app.route('/test')
 def hello_world():
     return 'Hello World'
 
 if __name__ == '__main__':
-    app.run(host='192.168.254.192', port=5000)
+    app.run(host='0.0.0.0', port=5000)
