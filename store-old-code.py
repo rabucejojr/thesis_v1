@@ -11,10 +11,8 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
-
 # SENSORS SETUP/PINOUT
 # Setup GPIO pin for DHT11 sensor
-
 sensor = Adafruit_DHT.DHT11
 pin = 27
 
@@ -25,9 +23,7 @@ db_config={
     'password':'admin',
     'database':'sensors',
     }
-    
-# Save DHT11 Temperature and Humidity
-# POST request
+#Save DHT11 Temperature and Humidity
 def save_dht_reading(temperature,humidity):
     try:
         conn = mysql.connector.connect(**db_config)
@@ -46,26 +42,23 @@ def save_dht_reading(temperature,humidity):
 # Start DHT11 Humidity and Temperature reading
 @app.route('/insert-dht-data')
 def insert_data():
-    try:
-        humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
-        temperature = temperature *(9/5) + 32
-        
-        if temperature is not None and humidity is not None:
-            save_dht_reading(temperature,humidity)  
-            return jsonify({"temperature": temperature, "humidity": humidity})
-        else:
-            return jsonify({"error": "Failed to retrieve data from sensor"}), 500
-    except RuntimeError as error:
-        return jsonify({"error": str(error)}), 500
-    except Exception as error:
-        return jsonify({"Error": str(error)}), 500
-            
-# Fetch DHT11 temperature
-# GET request
+    while True:
+        try:
+            humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
+            temperature = temperature *(9/5) + 32
+            if temperature is not None and humidity is not None:
+                save_dht_reading(temperature,humidity)  
+                return jsonify({"temperature": temperature, "humidity": humidity})
+            else:
+                return jsonify({"error": "Failed to retrieve data from sensor"}), 500
+        except RuntimeError as error:
+            return jsonify({"error": str(error)}), 500
+        except Exception as error:
+            return jsonify({"Error": str(error)}), 500
+# Fetch DHT11 temperature and humidity
 @app.route('/dht11-temp',methods=['GET'])
 def get_dht_temp():
     try:
-        print('testing dht11')
         conn = mysql.connector.connect(**db_config)
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM dht_temp")
@@ -74,15 +67,10 @@ def get_dht_temp():
         conn.close()
         # Convert fetched data to JSON format
         data = []
-        
-        for row in rows:      
-            intValue = float(row[1])
-            print(intValue)
-                  
+        for row in rows:            
             created_at = datetime.strftime(row[2], "%Y-%m-%d %H:%M:%S")  # Format date as dd/mm/yyyy HH:MM:SS
             
-            data.append({'id': row[0], 'value': intValue,'created_at': created_at})
-            
+            data.append({'id': row[0], 'value': row[1],'created_at': created_at})
         # Return JSON response
         return jsonify(data), 200
     except Exception as e:
@@ -90,8 +78,6 @@ def get_dht_temp():
         return False
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-        
-# Fetch DHT11 humidity
 @app.route('/dht11-humid',methods=['GET'])
 def get_dht_humid():
     try:
@@ -114,9 +100,7 @@ def get_dht_humid():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-# Ammonia Functionality
 # Start MQ137 reading
-# POST request
 @app.route('/mq137') # ,,methods=['POST']
 def get_mq137_reading():
     try:
@@ -131,12 +115,12 @@ def get_mq137_reading():
         return jsonify({"error": str(error)}), 500
     except Exception as error:
         return jsonify({"error": str(error)}), 500
+# End MQ137 reading
 
-# FOR TESTING PURPOSE
+
 @app.route('/test')
 def hello_world():
     return 'test'
 
-# RUNNING port
 if __name__ == '__main__':
     app.run(host='192.168.0.105', port=5000)
