@@ -8,6 +8,7 @@ import json
 import time
 from datetime import datetime
 from flask_cors import CORS
+import requests
 
 app = Flask(__name__)
 CORS(app)
@@ -136,7 +137,9 @@ def get_mq137_reading():
 @app.route('/test')
 def hello_world():
     return 'test'
-
+@app.route('/post')
+def fetch():
+    return requests.get("https://api.github.com")
 # RUNNING port
 if __name__ == '__main__':
     app.run(host='192.168.0.105', port=5000)
