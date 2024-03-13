@@ -134,6 +134,7 @@ def get_mq137_reading():
         return jsonify({"error": str(error)}), 500
 
 # FOR TESTING PURPOSE
+
 @app.route('/test')
 def hello_world():
     return 'test'
