@@ -8,6 +8,7 @@ import requests
 # temperature = float(temperature)
 # humidity = float(humidity)
 
+# Dummy Data
 new_data = {
     "userID": 1,
     "id": 1,
