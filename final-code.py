@@ -3,6 +3,9 @@ import Adafruit_DHT
 import time
 import Adafruit_ADS1x15
 
+#Global Variables
+temp, humid, nh3 = None
+
 #MQ137 Configuration
 adc = Adafruit_ADS1x15.ADS1115()
 
@@ -24,12 +27,15 @@ def dht11():
    # Convert values to float
    temperature = float(temperature)
    humidity = float(humidity)
+   temperature = temp
+   humidity = humid
    return temperature,humidity 
 
 def mq137():
    value = adc.read_adc(0,gain=GAIN)
    value = value * (4.09 / 32767.0)
    ppm = (value - V_RL) / Sensitivity
+   ppm = nh3
    print('value:',value)
    print('ppm:',ppm)
    print("Ammonia concentration:", ppm, "PPM")
