@@ -31,10 +31,11 @@ def dht11():
    humidity = float(humidity)
    temperature=temp
    humidity=humid
-   
+   # JSON Data
    temp_value = {
     "value": temp,
    }
+   # JSON Data
    humid_value = {
       "value": humid,
    }
@@ -57,7 +58,7 @@ def mq137():
    value = float(value)
    value =nh3
    time.sleep(0.5)
-   
+   # JSON Data
    nh3_value = {
    "value": nh3,
    }
