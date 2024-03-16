@@ -18,6 +18,9 @@ Sensitivity = 1.0  # Sensor sensitivity in PPM/V
 sensor = Adafruit_DHT.DHT11
 pin = 27
 
+#Relay Pin Configurations
+
+
 # API URL FOR BACKEND POST
 api_url = "https://jsonplaceholder.typicode.com/posts"
 
