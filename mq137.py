@@ -14,5 +14,5 @@ while True:
     ppm = (value - V_RL) / Sensitivity
     print(value)
     print("Ammonia concentration:", ppm, "PPM")
-    time.sleep(0.5)
+    time.sleep(1)
 
