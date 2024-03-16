@@ -22,7 +22,8 @@ pin = 27
 #Relay Pin Configurations
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(18,GPIO.OUT) # 18 for pinout, change for configuration
+GPIO.setup(18,GPIO.OUT) # change for configuration, solenoid1
+GPIO.setup(19,GPIO.OUT) # change for configuration, solenoid2
 
 # API URL FOR BACKEND POST
 api_url = "https://jsonplaceholder.typicode.com/posts"
@@ -48,10 +49,11 @@ def mq137():
    value = round(float(ppm),2)
    return ppm
 
-def relay(status):
+def relay(relay1,relay2):
    #status refers to 0 for close, 1 for open
-   GPIO.output(18,status)
-
+   GPIO.output(18,relay1) # relay for solenoid1
+   GPIO.output(19,relay2) # relay for solenoid2
+   
 def post_data(data):
    json_data = {'value':data}
    response = requests.post(api_url,json=json_data)
@@ -64,15 +66,13 @@ def post_data(data):
 def main():
    while True:
       temperature, humidity = dht11()
-      if temperature is not None and humidity is not None:
-         print(temperature,humidity)
+      ammonia = mq137()
+      if temperature is not None and humidity is not None and ammonia is not None:
+         print(temperature,humidity,ammonia)
          post_data(temperature)
          post_data(humidity)
-      ammonia = mq137()
-      if ammonia is not None:
-         print(ammonia)
          post_data(ammonia)
-      time.sleep(1)
+         time.sleep(1)
       
 if __name__ == "__main__":
    main() 
