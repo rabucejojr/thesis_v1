@@ -15,11 +15,6 @@ Sensitivity = 1.0  # Sensor sensitivity in PPM/V
 sensor = Adafruit_DHT.DHT11
 pin = 27
 
-# Sensor values
-temp = [] #get data from rpi and dht11
-humid = [] #get data from rpi and dht11
-nh3 = [] #get data from rpi and mq137
-
 # API URL FOR BACKEND POST
 api_url = "https://jsonplaceholder.typicode.com/posts"
 
@@ -29,45 +24,40 @@ def dht11():
    # Convert values to float
    temperature = float(temperature)
    humidity = float(humidity)
-   temperature=temp
-   humidity=humid
-   # JSON Data
-   temp_value = {
-    "value": temp,
-   }
-   # JSON Data
-   humid_value = {
-      "value": humid,
-   }
-   
-   # POST dht data: temperature
-   temp_res = requests.post(api_url,json=temp_value)
-   res = temp_res.json()
-   print(res)
-   # POST dht data: humidity
-   humid_res = requests.post(api_url,json=humid_value)
-   res = humid_res.json()
-   print(res)
+   return temperature,humidity 
 
 def mq137():
    value = adc.read_adc(0,gain=GAIN)
    value = value * (4.09 / 32767.0)
    ppm = (value - V_RL) / Sensitivity
-   print(value)
+   print('value:',value)
+   print('ppm:',ppm)
    print("Ammonia concentration:", ppm, "PPM")
-   value = float(value)
-   value =nh3
-   time.sleep(0.5)
-   # JSON Data
-   nh3_value = {
-   "value": nh3,
-   }
-   # POST dht data: ammonia
-   nh3_res = requests.post(api_url,json=nh3_value)
-   res = nh3_res.json()
-   print(res)
+   value = round(float(ppm),2)
+   return ppm
 
+def post_data(data):
+   json_data = {'value':data}
+   response = requests.post(api_url,json=json_data)
+   if response.status_code==201:
+      print('Data sent successfully')
+   else:
+      print('Failed to send data to API:', response.text)
 
-# Infinite Loop
+# Main Loop Execution
+def main():
+   while True:
+      temperature, humidity = dht11()
+      if temperature is not None and humidity is not None:
+         print(temperature,humidity)
+         post_data(temperature)
+         post_data(humidity)
+      ammonia = mq137()
+      if ammonia is not None:
+         print(ammonia)
+         post_data(ammonia)
+      time.sleep(1)
+      
+if __name__ == "__main__":
+   main() 
 
-   
