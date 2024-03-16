@@ -2,6 +2,7 @@ import requests
 import Adafruit_DHT
 import time
 import Adafruit_ADS1x15
+import RPi.GPIO as GPIO
 
 #Global Variables
 temp, humid, nh3 = None
@@ -19,7 +20,9 @@ sensor = Adafruit_DHT.DHT11
 pin = 27
 
 #Relay Pin Configurations
-
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(18,GPIO.OUT) # 18 for pinout, change for configuration
 
 # API URL FOR BACKEND POST
 api_url = "https://jsonplaceholder.typicode.com/posts"
@@ -44,6 +47,10 @@ def mq137():
    print("Ammonia concentration:", ppm, "PPM")
    value = round(float(ppm),2)
    return ppm
+
+def relay(status):
+   #status refers to 0 for close, 1 for open
+   GPIO.output(18,status)
 
 def post_data(data):
    json_data = {'value':data}
