@@ -53,7 +53,7 @@ def relay(relay1,relay2):
    #status refers to 0 for close, 1 for open
    GPIO.output(18,relay1) # relay for solenoid1
    GPIO.output(19,relay2) # relay for solenoid2
-   
+
 def post_data(data):
    json_data = {'value':data}
    response = requests.post(api_url,json=json_data)
@@ -73,6 +73,8 @@ def main():
          post_data(humidity)
          post_data(ammonia)
          time.sleep(1)
+         if temperature <= 32 and ammonia >= 25:
+            relay(1,1)
       
 if __name__ == "__main__":
    main() 
