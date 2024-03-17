@@ -25,6 +25,14 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(18,GPIO.OUT) # change for configuration, solenoid1
 GPIO.setup(19,GPIO.OUT) # change for configuration, solenoid2
 
+#Servo Pin Configurations
+GPIO.setmode(GPIO.BCM)
+servo_pin = 17
+GPIO.setup(servo_pin, GPIO.OUT)
+# Create a PWM object at 50Hz (20ms period)
+pwm = GPIO.PWM(servo_pin, 50)
+
+
 # API URL FOR BACKEND POST
 api_temp = "https://piggery-backend.vercel.app/api/temperature"
 api_humidity = "https://piggery-backend.vercel.app/api/humidity"
@@ -52,10 +60,20 @@ def mq137():
    value = round(float(ppm),2)
    return ppm
 
-def relay(relay1,relay2):
+def relay(relay1,relay2): # execute relays to activate soleniod valves
    #status refers to 0 for close, 1 for open
    GPIO.output(18,relay1) # relay for solenoid1
    GPIO.output(19,relay2) # relay for solenoid2
+
+def set_angle(angle):
+    duty = angle / 18 + 2
+    #open valve
+    GPIO.output(servo_pin, True)
+    pwm.ChangeDutyCycle(duty)
+    time.sleep(3)
+    #close valve
+    GPIO.output(servo_pin, False)
+    pwm.ChangeDutyCycle(0)
 
 def post_data(api,data):
    json_data = {'value':data}
@@ -80,7 +98,10 @@ def main():
             relay(1,1)
             time.sleep(5)
             # execute servo for autofeeder
-            # code here
+            pwm.start(0)
+            set_angle(90)
+            pwm.stop()
+            
       
 if __name__ == "__main__":
    main() 
