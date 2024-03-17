@@ -26,7 +26,10 @@ GPIO.setup(18,GPIO.OUT) # change for configuration, solenoid1
 GPIO.setup(19,GPIO.OUT) # change for configuration, solenoid2
 
 # API URL FOR BACKEND POST
-api_url = "https://jsonplaceholder.typicode.com/posts"
+api_temp = "https://piggery-backend.vercel.app/api/temperature"
+api_humidity = "https://piggery-backend.vercel.app/api/humidity"
+api_nh3 = "https://piggery-backend.vercel.app/api/ammonia"
+
 
 def dht11():
    humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
@@ -54,9 +57,9 @@ def relay(relay1,relay2):
    GPIO.output(18,relay1) # relay for solenoid1
    GPIO.output(19,relay2) # relay for solenoid2
 
-def post_data(data):
+def post_data(api,data):
    json_data = {'value':data}
-   response = requests.post(api_url,json=json_data)
+   response = requests.post(api,json=json_data)
    if response.status_code==201:
       print('Data sent successfully')
    else:
@@ -69,9 +72,9 @@ def main():
       ammonia = mq137()
       if temperature is not None and humidity is not None and ammonia is not None:
          print(temperature,humidity,ammonia)
-         post_data(temperature)
-         post_data(humidity)
-         post_data(ammonia)
+         post_data(api_temp,temperature)
+         post_data(api_humidity,humidity)
+         post_data(api_nh3,ammonia)
          time.sleep(1)
          if temperature <= 32 and ammonia >= 25:
             relay(1,1)
