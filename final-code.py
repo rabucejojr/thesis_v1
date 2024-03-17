@@ -75,6 +75,9 @@ def main():
          time.sleep(1)
          if temperature <= 32 and ammonia >= 25:
             relay(1,1)
+            time.sleep(5)
+            # execute servo for autofeeder
+            # code here
       
 if __name__ == "__main__":
    main() 
