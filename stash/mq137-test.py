@@ -7,6 +7,7 @@ adc = Adafruit_ADS1x15.ADS1115()
 # Choose a gain of 1 for reading voltages from 0 to 4.09V.
 GAIN = 1
 
+
 def read_analog():
     sensor_value = 0
     for x in range(500):
@@ -19,6 +20,7 @@ def read_analog():
     R0 = RS_air / 3.6  # calculate R0
     return R0
 
+
 try:
     while True:
         R0_value = read_analog()
@@ -27,6 +29,3 @@ try:
 
 except KeyboardInterrupt:
     pass
-
-
-

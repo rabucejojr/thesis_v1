@@ -1,4 +1,5 @@
 import requests
+
 # import Adafruit_DHT
 # sensor = Adafruit_DHT.DHT11
 # pin = 27
@@ -13,10 +14,10 @@ new_data = {
     "userID": 1,
     "id": 1,
     "title": "Making a POST request",
-    "body": "This is the data we created."
+    "body": "This is the data we created.",
 }
 api_url = "https://jsonplaceholder.typicode.com/posts"
-response = requests.post(api_url,json=new_data)
+response = requests.post(api_url, json=new_data)
 response_dict = response.json()
 print(response_dict)
 

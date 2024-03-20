@@ -20,7 +20,7 @@ try:
                 egg_count += 1
                 print("Egg detected! Total eggs counted:", egg_count)
                 last_detection_time = time.time()
-        
+
         # You can add additional logic here, such as saving the count to a file or database.
 
         time.sleep(0.1)  # Sleep to reduce CPU usage
