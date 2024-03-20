@@ -100,7 +100,7 @@ def main():
             post_data(api_humidity, humidity, 'Humidity')
             print('=====DONE=====')
 #             post_data(api_nh3, ammonia, 'Ammonia')
-            time.sleep(2)
+            time.sleep(150)
 #             if temperature <= 32 and ammonia >= 25:
 #                 relay(1, 1)
 #                 time.sleep(5)
