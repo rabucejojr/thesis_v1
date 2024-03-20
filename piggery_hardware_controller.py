@@ -5,7 +5,7 @@ import Adafruit_ADS1x15
 import RPi.GPIO as GPIO
 
 # Global Variables
-temp, humid, nh3 = None
+global temp, humid, nh3
 
 # MQ137 Configuration
 adc = Adafruit_ADS1x15.ADS1115()
@@ -45,8 +45,8 @@ def dht11():
     # Convert values to float
     temperature = float(temperature)
     humidity = float(humidity)
-    temperature = temp
-    humidity = humid
+#     temperature = temp
+#     humidity = humid
     return temperature, humidity
 
 
@@ -79,11 +79,11 @@ def set_angle(angle):
     pwm.ChangeDutyCycle(0)
 
 
-def post_data(api, data):
+def post_data(api, data, label):
     json_data = {"value": data}
     response = requests.post(api, json=json_data)
     if response.status_code == 201:
-        print("Data sent successfully")
+        print(label,"data sent successfully")
     else:
         print("Failed to send data to API:", response.text)
 
@@ -92,20 +92,21 @@ def post_data(api, data):
 def main():
     while True:
         temperature, humidity = dht11()
-        ammonia = mq137()
-        if temperature is not None and humidity is not None and ammonia is not None:
-            print(temperature, humidity, ammonia)
-            post_data(api_temp, temperature)
-            post_data(api_humidity, humidity)
-            post_data(api_nh3, ammonia)
-            time.sleep(1)
-            if temperature <= 32 and ammonia >= 25:
-                relay(1, 1)
-                time.sleep(5)
-                # execute servo for autofeeder
-                pwm.start(0)
-                set_angle(90)
-                pwm.stop()
+#         ammonia = mq137()
+        if temperature is not None and humidity is not None:
+            print("Temperature:", temperature)
+            print("Humidity:", humidity)
+            post_data(api_temp, temperature, 'Temperature')
+            post_data(api_humidity, humidity, 'Humidity')
+#             post_data(api_nh3, ammonia, 'Ammonia')
+            time.sleep(300)
+#             if temperature <= 32 and ammonia >= 25:
+#                 relay(1, 1)
+#                 time.sleep(5)
+#                 # execute servo for autofeeder
+#                 pwm.start(0)
+#                 set_angle(90)
+#                 pwm.stop()
 
 
 if __name__ == "__main__":
