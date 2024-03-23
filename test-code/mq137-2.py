@@ -29,13 +29,14 @@ def main():
         while True:
             # Read analog voltage from MQ sensor
             value = adc.read_adc(MQ_sensor, gain=GAIN)
+            print('value:', value)
             VRL = value * (5.0 / 32767.0)  # Convert to voltage (ADS1115 is 16-bit)
             
             # Calculate ammonia concentration in PPM
             ppm = get_ppm(VRL)
 
             # Print values to console
-            print('Ammonia concentration:', round(ppm, 2), 'PPM')
+            print('Ammonia concentration:', round(ppm,2), 'PPM')
             print('Voltage:', round(VRL, 2), 'V')
             print('-' * 20)
             time.sleep(1)
