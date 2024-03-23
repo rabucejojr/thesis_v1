@@ -90,24 +90,23 @@ def post_data(api, data, label):
 
 # Main Loop Execution
 def main():
-    while True:
-        temperature, humidity = dht11()
+    temperature, humidity = dht11()
 #         ammonia = mq137()
-        if temperature is not None and humidity is not None:
-            print("Temperature:", temperature)
-            print("Humidity:", humidity)
-            post_data(api_temp, temperature, 'Temperature')
-            post_data(api_humidity, humidity, 'Humidity')
-            print('=====DONE=====')
-#             post_data(api_nh3, ammonia, 'Ammonia')
-            time.sleep(150)
-#             if temperature <= 32 and ammonia >= 25:
-#                 relay(1, 1)
-#                 time.sleep(5)
-#                 # execute servo for autofeeder
-#                 pwm.start(0)
-#                 set_angle(90)
-#                 pwm.stop()
+    if temperature is not None and humidity is not None:
+        print("Temperature:", temperature)
+        print("Humidity:", humidity)
+        post_data(api_temp, temperature, 'Temperature')
+        post_data(api_humidity, humidity, 'Humidity')
+        print('=====DONE=====')
+        # post_data(api_nh3, ammonia, 'Ammonia')
+        time.sleep(150)
+        # if temperature <= 32 and ammonia >= 25:
+        #     relay(1, 1)
+        #     time.sleep(5)
+        #     # execute servo for autofeeder
+        #     pwm.start(0)
+        #     set_angle(90)
+        #     pwm.stop()
 
 
 if __name__ == "__main__":
