@@ -12,6 +12,5 @@ while True:
     value = adc.read_adc(0, gain=GAIN)
     value = value * (4.09 / 32767.0)
     ppm = (value - V_RL) / Sensitivity
-    print(value)
     print("Ammonia concentration:", ppm, "PPM")
     time.sleep(1)
