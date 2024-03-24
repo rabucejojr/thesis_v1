@@ -98,13 +98,11 @@ def main():
             post_data(api_nh3, ammonia, "Ammonia")
             print("-" * 20)
             time.sleep(300)  # Reread after 5 minutes
-            # if temperature <= 32 and ammonia >= 25:
-            #     relay(1, 1)
-            #     time.sleep(5)
-            #     # execute servo for autofeeder
-            #     pwm.start(0)
-            #     set_angle(90)
-            #     pwm.stop()
+            # check sensor readings are above threshold
+            # if true, execute open relay/solenoid
+            # to open pump to clean the area
+            # and if done, open autofeeder to release feeds
+            # if false, reread sensor readings until previous conditions are met
 
 
 if __name__ == "__main__":
