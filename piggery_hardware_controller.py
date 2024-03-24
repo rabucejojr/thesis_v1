@@ -48,13 +48,6 @@ def dht11():
     return temperature, humidity
 
 
-def get_ppm(VRL):
-    Rs = ((5.0 * RL) / VRL) - RL  # Calculate Rs value
-    ratio = Rs / Ro  # Calculate ratio Rs/Ro
-    ppm = pow(10, ((math.log10(ratio) - b) / m))  # Calculate ppm
-    return ppm
-
-
 def mq137(VRL):
     Rs = ((5.0 * RL) / VRL) - RL  # Calculate Rs value
     ratio = Rs / Ro  # Calculate ratio Rs/Ro
