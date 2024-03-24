@@ -33,7 +33,6 @@ GPIO.setup(servo_pin, GPIO.OUT)
 # Create a PWM object at 50Hz (20ms period)
 pwm = GPIO.PWM(servo_pin, 50)
 
-
 # API URL FOR BACKEND POST
 api_temp = "https://piggery-backend.vercel.app/api/temperature"
 api_humidity = "https://piggery-backend.vercel.app/api/humidity"
@@ -48,11 +47,13 @@ def dht11():
     humidity = float(humidity)
     return temperature, humidity
 
+
 def get_ppm(VRL):
     Rs = ((5.0 * RL) / VRL) - RL  # Calculate Rs value
     ratio = Rs / Ro  # Calculate ratio Rs/Ro
     ppm = pow(10, ((math.log10(ratio) - b) / m))  # Calculate ppm
     return ppm
+
 
 def mq137(VRL):
     Rs = ((5.0 * RL) / VRL) - RL  # Calculate Rs value
@@ -82,7 +83,7 @@ def post_data(api, data, label):
     json_data = {"value": data}
     response = requests.post(api, json=json_data)
     if response.status_code == 201:
-        print(label,"data sent successfully")
+        print(label, "data sent successfully")
     else:
         print("Failed to send data to API:", response.text)
 
@@ -91,20 +92,20 @@ def post_data(api, data, label):
 def main():
     while True:
         temperature, humidity = dht11()
-        value = adc.read_adc(MQ_sensor, gain=GAIN) # MQ137 adc reading
+        value = adc.read_adc(MQ_sensor, gain=GAIN)  # MQ137 adc reading
         VRL = value * (5.0 / 32767.0)
-        ammonia = mq137(VRL) 
+        ammonia = mq137(VRL)
         ammonia = mq137()
         if temperature is not None and humidity is not None:
             print("Temperature:", temperature)
             print("Humidity:", humidity)
-            print("Ammonia:", round(ammonia,2))
+            print("Ammonia:", round(ammonia, 2))
             # Post sensor readin to api
-            post_data(api_temp, temperature, 'Temperature')
-            post_data(api_humidity, humidity, 'Humidity')
-            post_data(api_nh3, ammonia, 'Ammonia')
-            print('-' * 20)
-            time.sleep(300) # Reread after 5 minutes
+            post_data(api_temp, temperature, "Temperature")
+            post_data(api_humidity, humidity, "Humidity")
+            post_data(api_nh3, ammonia, "Ammonia")
+            print("-" * 20)
+            time.sleep(300)  # Reread after 5 minutes
             # if temperature <= 32 and ammonia >= 25:
             #     relay(1, 1)
             #     time.sleep(5)
