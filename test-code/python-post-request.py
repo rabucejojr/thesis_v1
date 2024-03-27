@@ -1,13 +1,14 @@
 import requests
 import Adafruit_DHT
 import datetime
+
 now = datetime.datetime.now()
 
 # GET request
 getSample = "http://piggery-backend.vercel.app/api/ammonia"
 response = requests.get(getSample)
 
-print (now)
+print(now)
 # print(response.json())
 
 print("Start POST request")
