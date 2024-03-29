@@ -1,8 +1,8 @@
 import requests
 import Adafruit_DHT
-import time
+from time import sleep
 import Adafruit_ADS1x15
-import RPi.GPIO as GPIO
+from gpiozero import OutputDevice, AngularServo
 import math
 
 # MQ137 Configuration
@@ -21,17 +21,13 @@ sensor = Adafruit_DHT.DHT11
 pin = 27
 
 # Relay Pin Configurations
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(18, GPIO.OUT)  # change for configuration, solenoid1
-GPIO.setup(19, GPIO.OUT)  # change for configuration, solenoid2
+pin1 = 17
+pin2 = 22
+relay1 = OutputDevice(pin1,active_high=False, initial_value=False)
+relay2 = OutputDevice(pin2,active_high=False, initial_value=False)# change for configuration, solenoid2
 
 # Servo Pin Configurations
-GPIO.setmode(GPIO.BCM)
-servo_pin = 17
-GPIO.setup(servo_pin, GPIO.OUT)
-# Create a PWM object at 50Hz (20ms period)
-pwm = GPIO.PWM(servo_pin, 50)
+servo = AngularServo(17,min_angle=-180,max_angle=180)
 
 # API URL FOR BACKEND POST
 api_temp = "https://piggery-backend.vercel.app/api/temperature"
@@ -55,22 +51,19 @@ def mq137(VRL):
     return ppm
 
 
-def relay(relay1, relay2):  # execute relays to activate soleniod valves
-    # status refers to 0 for close, 1 for open
-    GPIO.output(18, relay1)  # relay for solenoid1
-    GPIO.output(19, relay2)  # relay for solenoid2
-
-
-def set_angle(angle):
-    duty = angle / 18 + 2
-    # open valve
-    GPIO.output(servo_pin, True)
-    pwm.ChangeDutyCycle(duty)
-    time.sleep(3)
-    # close valve
-    GPIO.output(servo_pin, False)
-    pwm.ChangeDutyCycle(0)
-
+def solenoidValve(delay):  # execute relays to activate soleniod valves
+    relay1.on()
+    relay2.on()
+    sleep(delay)
+    relay1.off()
+    relay2.off()
+    sleep(delay)
+    
+def foodValveServo(delay):
+    servo.angle = -180
+    sleep(delay)
+    servo.angle = 180
+    sleep(delay)
 
 def post_data(api, data, label):
     json_data = {"value": data}
@@ -97,7 +90,7 @@ def main():
             post_data(api_humidity, humidity, "Humidity")
             post_data(api_nh3, ammonia, "Ammonia")
             print("-" * 20)
-            time.sleep(300)  # Reread after 5 minutes
+            sleep(300)  # Reread after 5 minutes
             # check sensor readings are above threshold
             # if true, execute open relay/solenoid
             # to open pump to clean the area
