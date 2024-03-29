@@ -82,8 +82,8 @@ def main():
         VRL = value * (5.0 / 32767.0)
         ammonia = mq137(VRL)
         if temperature >= 35 or humidity >= 2.5:
-            solenoidValve(20)
             foodValveServo(30)
+            solenoidValve(20)
         elif temperature is not None and humidity is not None:
             print("Temperature:", temperature)
             print("Humidity:", humidity)
