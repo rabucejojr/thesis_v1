@@ -81,7 +81,10 @@ def main():
         value = adc.read_adc(MQ_sensor, gain=GAIN)  # MQ137 adc reading
         VRL = value * (5.0 / 32767.0)
         ammonia = mq137(VRL)
-        if temperature is not None and humidity is not None:
+        if temperature >= 35 or humidity >= 2.5:
+            solenoidValve(20)
+            foodValveServo(30)
+        elif temperature is not None and humidity is not None:
             print("Temperature:", temperature)
             print("Humidity:", humidity)
             print("Ammonia:", round(ammonia, 2))
