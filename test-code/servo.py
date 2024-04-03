@@ -1,12 +1,27 @@
-from gpiozero import AngularServo
+from gpiozero.pins.pigpio import PiGPIOFactory
+
+from gpiozero import Servo
 from time import sleep
 
-servo =AngularServo(18, min_angle=0, max_angle=270, min_pulse_width=0.0005, max_pulse_width=0.0025)
+# create a custom pin-factory to fix servo jitter
+# more info here: https://gpiozero.readthedocs.io/en/stable/api_output.html#servo
+# and here: https://gpiozero.readthedocs.io/en/stable/api_pins.html
+pigpio_factory = PiGPIOFactory()
 
-while (True):
-    servo.angle = 0
-    sleep(2)
-    servo.angle = 135
-    sleep(2)
-    servo.angle = 260
-    sleep(2)
+servo = Servo(22, pin_factory=pigpio_factory)
+servo.mid()
+print("servo mid")
+sleep(3)
+
+while True:
+  servo.min()
+  print("servo min")
+  sleep(3)
+
+  servo.mid()
+  print("servo mid")  
+  sleep(3)
+
+  servo.max()
+  print("servo max")
+  sleep(3)
