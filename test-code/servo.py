@@ -1,27 +1,34 @@
-from gpiozero.pins.pigpio import PiGPIOFactory
+import RPi.GPIO as GPIO
+import time
 
-from gpiozero import Servo
-from time import sleep
+# Set up GPIO
+servo_pin = 5
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(servo_pin, GPIO.OUT)
 
-# create a custom pin-factory to fix servo jitter
-# more info here: https://gpiozero.readthedocs.io/en/stable/api_output.html#servo
-# and here: https://gpiozero.readthedocs.io/en/stable/api_pins.html
-pigpio_factory = PiGPIOFactory()
+# Create PWM object
+pwm = GPIO.PWM(servo_pin, 50)  # 50 Hz (20 ms PWM period)
 
-servo = Servo(22, pin_factory=pigpio_factory)
-servo.mid()
-print("servo mid")
-sleep(3)
+# Start PWM
+pwm.start(0)  # Start with 0% duty cycle
 
-while True:
-  servo.min()
-  print("servo min")
-  sleep(3)
+def set_angle(angle):
+    duty = angle / 18.0 + 2.5  # Convert angle to duty cycle
+    pwm.ChangeDutyCycle(duty)
 
-  servo.mid()
-  print("servo mid")  
-  sleep(3)
+try:
+    while True:
+        # Rotate from 0 to 180 degrees
+        for angle in range(0, 181, 10):
+            set_angle(angle)
+            time.sleep(0.5)  # Adjust speed of rotation here
 
-  servo.max()
-  print("servo max")
-  sleep(3)
+        # Rotate from 180 to 0 degrees
+        for angle in range(180, -1, -10):
+            set_angle(angle)
+            time.sleep(0.5)  # Adjust speed of rotation here
+
+except KeyboardInterrupt:
+    # Clean up GPIO
+    pwm.stop()
+    GPIO.cleanup()
