@@ -1,11 +1,12 @@
 import RPi.GPIO as GPIO
 import time
 
+# Disable warnings about GPIO pin usage
+GPIO.setwarnings(False)
 # Set up GPIO
 servo_pin = 5
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(servo_pin, GPIO.OUT)
-GPIO.setwarnings(False) 
 # Create PWM object
 pwm = GPIO.PWM(servo_pin, 50)  # 50 Hz (20 ms PWM period)
 
