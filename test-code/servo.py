@@ -1,8 +1,8 @@
 import RPi.GPIO as GPIO
 from time import sleep
 
-servo1 = 29
-servo2 = 31
+servo1 = 29 # for water
+servo2 = 31 # for feeds
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False) 
 GPIO.setup(servo1, GPIO.OUT)
@@ -21,5 +21,6 @@ try:
         sleep(4)
 
 except KeyboardInterrupt:
-    p.stop()
+    p1.stop()
+    p2.stop()
     GPIO.cleanup()
