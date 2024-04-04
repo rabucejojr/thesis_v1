@@ -1,35 +1,29 @@
 import RPi.GPIO as GPIO
-import time
+from time import sleep
 
-# Disable warnings about GPIO pin usage
-GPIO.setwarnings(False)
-# Set up GPIO
-servo_pin = 5
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(servo_pin, GPIO.OUT)
-# Create PWM object
-pwm = GPIO.PWM(servo_pin, 50)  # 50 Hz (20 ms PWM period)
-
-# Start PWM
-pwm.start(0)  # Start with 0% duty cycle
-
-def set_angle(angle):
-    duty = angle / 18.0 + 2.5  # Convert angle to duty cycle
-    pwm.ChangeDutyCycle(duty)
-
+servo1 = 29
+servo2 = 31
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(servo1, GPIO.OUT)
+GPIO.setup(servo2, GPIO.OUT)
+p1 = GPIO.PWM(servo1, 50) 
+p2 = GPIO.PWM(servo2, 50)# GPIO 17 for PWM with 50Hz
+p.start(2.5)  # Initialization
 try:
     while True:
-        # Rotate from 0 to 180 degrees
-        for angle in range(0, 181, 10):
-            set_angle(angle)
-            time.sleep(0.5)  # Adjust speed of rotation here
-
-        # Rotate from 180 to 0 degrees
-        for angle in range(180, -1, -10):
-            set_angle(angle)
-            time.sleep(0.5)  # Adjust speed of rotation here
+        p1.ChangeDutyCycle(5)
+        p2.ChangeDutyCycle(5)
+        sleep(0.5)
+        p1.ChangeDutyCycle(7.5)
+        p2.ChangeDutyCycle(7.5)
+        sleep(0.5)
+        p1.ChangeDutyCycle(10)
+        p2.ChangeDutyCycle(10)
+        sleep(0.5)
+        p1.ChangeDutyCycle(12.5)
+        p2.ChangeDutyCycle(12.5)
+        sleep(0.5)
 
 except KeyboardInterrupt:
-    # Clean up GPIO
-    pwm.stop()
+    p.stop()
     GPIO.cleanup()
