@@ -97,8 +97,8 @@ def main():
             # check sensor readings are above threshold
             # if true, execute open relay/solenoid
             # to open pump to clean the area
-            # and if done, open autofeeder to release feeds
-            # if false, reread sensor readings until previous conditions are met
+            # automatic feeder has been scheduled for
+            # execution thru crontab: every 7am and 4pm
 
 
 if __name__ == "__main__":
