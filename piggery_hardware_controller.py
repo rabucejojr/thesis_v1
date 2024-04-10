@@ -58,12 +58,6 @@ def solenoidValve(delay):  # execute relays to activate soleniod valves
     relay1.off()
     relay2.off()
     sleep(delay)
-    
-def foodValveServo(delay):
-    servo.angle = -180
-    sleep(delay)
-    servo.angle = 180
-    sleep(delay)
 
 def post_data(api, data, label):
     json_data = {"value": data}
@@ -82,7 +76,6 @@ def main():
         VRL = value * (5.0 / 32767.0)
         ammonia = mq137(VRL)
         if temperature >= 35 or humidity >= 2.5:
-            foodValveServo(30)
             solenoidValve(20)
         elif temperature is not None and humidity is not None:
             print("Temperature:", temperature)
