@@ -12,7 +12,7 @@ GPIO.setwarnings(False)
 GPIO.setup(servo1, GPIO.OUT)
 GPIO.setup(servo2, GPIO.OUT)
 p1 = GPIO.PWM(servo1, 50) 
-p2 = GPIO.PWM(servo2, 50)# GPIO 17 for PWM with 50Hz
+p2 = GPIO.PWM(servo2, 50)
 p1.start(0)
 p2.start(0)# Initialization
 try:
