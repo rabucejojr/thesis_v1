@@ -18,11 +18,11 @@ MQ_sensor = 0  # Sensor is connected to A0 on ADS1115
 
 # DHT11 Pin Configuration
 sensor = Adafruit_DHT.DHT11
-pin = 27
+pin = 27 #GPIO27
 
 # Relay Pin Configurations
-pin1 = 17
-pin2 = 22
+pin1 = 17 # Pin Sequence 17
+pin2 = 22 # Pin Sequence 17
 relay1 = OutputDevice(pin1,active_high=False, initial_value=False)
 relay2 = OutputDevice(pin2,active_high=False, initial_value=False)# change for configuration, solenoid2
 
