@@ -9,8 +9,8 @@
 import RPi.GPIO as GPIO
 from time import sleep
 
-servo1 = 29
-servo2 = 31
+servo1 = 29 # Pin Sequence 29
+servo2 = 31 # Pin Sequence 31
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False) 
 GPIO.setup(servo1, GPIO.OUT)
