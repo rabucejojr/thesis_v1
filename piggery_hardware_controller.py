@@ -2,7 +2,7 @@ import requests
 import Adafruit_DHT
 from time import sleep
 import Adafruit_ADS1x15
-from gpiozero import OutputDevice, AngularServo
+from gpiozero import OutputDevice
 import math
 
 # MQ137 Configuration
@@ -22,12 +22,9 @@ pin = 27 #GPIO27
 
 # Relay Pin Configurations
 pin1 = 17 # Pin Sequence 17
-pin2 = 22 # Pin Sequence 17
+pin2 = 22 # Pin Sequence 22
 relay1 = OutputDevice(pin1,active_high=False, initial_value=False)
 relay2 = OutputDevice(pin2,active_high=False, initial_value=False)# change for configuration, solenoid2
-
-# Servo Pin Configurations
-servo = AngularServo(17,min_angle=-180,max_angle=180)
 
 # API URL FOR BACKEND POST
 api_temp = "https://piggery-backend.vercel.app/api/temperature"
@@ -75,13 +72,14 @@ def main():
         value = adc.read_adc(MQ_sensor, gain=GAIN)  # MQ137 adc reading
         VRL = value * (5.0 / 32767.0)
         ammonia = mq137(VRL)
-        if temperature >= 35 or humidity >= 2.5 or ammonia >= 35:
-            solenoidValve(20) #opens relay to pump water to clean the surface
-        elif temperature is not None and humidity is not None:
+        if temperature is not None and humidity is not None:
             print("Temperature:", temperature)
             print("Humidity:", humidity)
             print("Ammonia:", round(ammonia, 2))
-            # Post sensor readin to api
+            # check in readings are above minimum
+            if temperature >= 35 or humidity >= 2.5 or ammonia >= 50:
+                solenoidValve(10) #opens relay to pump water to clean the surface
+            # then post sensor readin gto api
             post_data(api_temp, temperature, "Temperature")
             post_data(api_humidity, humidity, "Humidity")
             post_data(api_nh3, ammonia, "Ammonia")
