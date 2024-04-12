@@ -76,7 +76,7 @@ def main():
         VRL = value * (5.0 / 32767.0)
         ammonia = mq137(VRL)
         if temperature >= 35 or humidity >= 2.5 or ammonia >= 35:
-            solenoidValve(20)
+            solenoidValve(20) #opens relay to pump water to clean the surface
         elif temperature is not None and humidity is not None:
             print("Temperature:", temperature)
             print("Humidity:", humidity)
@@ -87,11 +87,6 @@ def main():
             post_data(api_nh3, ammonia, "Ammonia")
             print("-" * 20)
             sleep(300)  # Reread after 5 minutes
-            # check sensor readings are above threshold
-            # if true, execute open relay/solenoid
-            # to open pump to clean the area
-            # automatic feeder has been scheduled for
-            # execution thru crontab: every 7am and 4pm
 
 
 if __name__ == "__main__":
