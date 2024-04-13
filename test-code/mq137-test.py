@@ -5,7 +5,7 @@ import Adafruit_ADS1x15
 adc = Adafruit_ADS1x15.ADS1115()
 
 # Choose a gain of 1 for reading voltages from 0 to 4.09V.
-GAIN = 2/3
+GAIN = 1
 
 
 def read_analog():
