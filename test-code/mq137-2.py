@@ -10,7 +10,8 @@ GAIN = 1
 RL = 47  # The value of resistor RL is 47K
 m = -0.263  # Enter calculated Slope
 b = 0.42  # Enter calculated intercept
-Ro = 496.0725684427985  # Enter found Ro value
+# Ro = 496.0725684427985  # Enter found Ro value
+Ro = 150.0725684427985  # Enter found Ro value
 MQ_sensor = 0  # Sensor is connected to A0 on ADS1115
 
 
