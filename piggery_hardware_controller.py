@@ -78,7 +78,7 @@ def main():
             print("Ammonia:", round(ammonia, 2))
             # check in readings are above minimum
             if temperature >= 35 or humidity >= 2.5 or ammonia >= 50:
-                solenoidValve(10) #opens relay to pump water to clean the surface
+                solenoidValve(5) #opens relay to pump water to clean the surface
             # then post sensor readin gto api
             post_data(api_temp, temperature, "Temperature")
             post_data(api_humidity, humidity, "Humidity")
