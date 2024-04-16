@@ -16,7 +16,7 @@ try:
         p1.ChangeDutyCycle(2.5)
         p2.ChangeDutyCycle(2.5)
         sleep(4)
-        p1.ChangeDutyCycle(7)
+        p1.ChangeDutyCycle(12.5)
         p2.ChangeDutyCycle(7)
         sleep(4)
 
