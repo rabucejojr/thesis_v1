@@ -17,6 +17,7 @@ try:
         p2.ChangeDutyCycle(2.5)
         sleep(4)
         p1.ChangeDutyCycle(12.5)
+        sleep(2)
         p2.ChangeDutyCycle(7)
         sleep(4)
 
