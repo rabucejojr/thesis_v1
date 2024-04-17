@@ -22,13 +22,11 @@ p2.start(0)# Initialization
 try:
     while True:
         p1.ChangeDutyCycle(2.5)
-        sleep(15)
         p2.ChangeDutyCycle(2.5)
-        sleep(10)
-        p1.ChangeDutyCycle(7)
-        sleep(15)
+        sleep(4)
+        p1.ChangeDutyCycle(12.5)
         p2.ChangeDutyCycle(7)
-        sleep(10)
+        sleep(4)
 
 except KeyboardInterrupt:
     p1.stop()
