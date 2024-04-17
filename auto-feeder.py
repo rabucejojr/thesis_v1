@@ -26,6 +26,7 @@ try:
         p2.ChangeDutyCycle(2.5)
         sleep(10)
         p1.ChangeDutyCycle(7)
+        sleep(15)
         p2.ChangeDutyCycle(7)
         sleep(10)
 
